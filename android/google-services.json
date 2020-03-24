@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "654007037478",
+    "firebase_url": "https://shared-to-do.firebaseio.com",
+    "project_id": "shared-to-do",
+    "storage_bucket": "shared-to-do.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654007037478:android:61ced7e4ad0cd194cac0e7",
+        "android_client_info": {
+          "package_name": "com.theprogers.shared_to_do"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "654007037478-0ofbgjunmhl3fb5ggrgfdibgu08kd07j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTg40eQc-13KuCEZI90zTXzNuAnBNc9is"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "654007037478-0ofbgjunmhl3fb5ggrgfdibgu08kd07j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
