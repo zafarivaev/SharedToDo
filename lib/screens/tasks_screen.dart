@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_to_do/screens/welcome_screen.dart';
+import 'package:shared_to_do/screens/task_detail_screen.dart';
 import 'package:shared_to_do/utils/constants.dart';
-import 'package:shared_to_do/widgets/option_list_tile.dart';
+import 'package:shared_to_do/widgets/task_drawer.dart';
+import 'package:shared_to_do/widgets/tasks_stream.dart';
 
 class TasksScreen extends StatefulWidget {
   static const id = 'tasks_screen';
@@ -36,35 +36,7 @@ class _TasksScreenState extends State<TasksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: 20),
-              child: Text(
-                _userEmail,
-                style: TextStyle(fontSize: 24, color: kBlueHorizonColor),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Divider(
-              color: Colors.grey,
-            ),
-            OptionListTile(
-              iconData: Icons.exit_to_app,
-              title: 'Sign Out',
-              onTapHandler: () async {
-                await _auth.signOut();
-                SharedPreferences preferences =
-                    await SharedPreferences.getInstance();
-                preferences.setBool('is_logged_in', false);
-                Navigator.pushNamedAndRemoveUntil(
-                    context, WelcomeScreen.id, (Route<dynamic> route) => false);
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: TasksDrawer(userEmail: _userEmail, auth: _auth),
       appBar: AppBar(
         backgroundColor: kDesireColor,
         title: Text('Shared Tasks'),
@@ -74,9 +46,10 @@ class _TasksScreenState extends State<TasksScreen> {
         backgroundColor: kDesireColor,
         onPressed: () {
           showModalBottomSheet(
-              context: context, builder: (context) => WelcomeScreen());
+              context: context, builder: (context) => TaskDetailScreen());
         },
       ),
+      body: TasksList(),
     );
   }
 }

@@ -4,6 +4,8 @@ class AuthActionButton extends StatelessWidget {
   final double width;
   final double height;
   final String title;
+  final double borderRadius;
+  final double elevation;
   final Color backgroundColor;
   final Function onPressedHandler;
   final bool isEnabled;
@@ -12,6 +14,8 @@ class AuthActionButton extends StatelessWidget {
       {@required this.width,
       @required this.height,
       @required this.title,
+      this.borderRadius = 20.0,
+      this.elevation = 1,
       @required this.backgroundColor,
       @required this.onPressedHandler,
       this.isEnabled = true});
@@ -22,8 +26,9 @@ class AuthActionButton extends StatelessWidget {
       width: width,
       height: height,
       child: RaisedButton(
+        elevation: elevation,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
         color: backgroundColor,
         child: Text(
