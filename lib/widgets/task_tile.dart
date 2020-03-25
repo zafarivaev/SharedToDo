@@ -11,6 +11,7 @@ class TaskTile extends StatefulWidget {
 
   final Function(String taskId) onTaskDeleteHandler;
   final Function(String taskId, bool isDone) onTaskStatusChange;
+  final Function(String taskId, String taskTitle) onTaskEditHandler;
 
   TaskTile(
       {this.taskId,
@@ -19,7 +20,8 @@ class TaskTile extends StatefulWidget {
       this.timestamp,
       this.author,
       this.onTaskDeleteHandler,
-      this.onTaskStatusChange});
+      this.onTaskStatusChange,
+      this.onTaskEditHandler});
 
   @override
   _TaskTileState createState() => _TaskTileState();
@@ -68,7 +70,7 @@ class _TaskTileState extends State<TaskTile> {
           caption: 'Edit',
           color: Colors.yellow[600],
           icon: Icons.edit,
-          onTap: () {},
+          onTap: () => widget.onTaskEditHandler(widget.taskId, widget.title),
         ),
       ],
       secondaryActions: <Widget>[
@@ -85,7 +87,7 @@ class _TaskTileState extends State<TaskTile> {
           if (actionType == SlideActionType.secondary) {
             widget.onTaskDeleteHandler(widget.taskId);
           } else {
-            print('Should edit');
+            widget.onTaskEditHandler(widget.taskId, widget.title);
           }
         },
         onWillDismiss: (actionType) {

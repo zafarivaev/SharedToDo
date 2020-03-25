@@ -7,6 +7,10 @@ import 'package:shared_to_do/widgets/task_tile.dart';
 import 'error_dialog.dart';
 
 class TasksList extends StatefulWidget {
+  final Function(String taskId, String title) didChooseEdit;
+
+  TasksList({this.didChooseEdit});
+
   @override
   _TasksListState createState() => _TasksListState();
 }
@@ -64,6 +68,7 @@ class _TasksListState extends State<TasksList> {
                     timestamp: task.timestamp,
                     author: task.createdBy,
                     isDone: task.isDone,
+                    onTaskEditHandler: widget.didChooseEdit,
                     onTaskStatusChange: (taskId, isDone) async {
                       await _firestore
                           .collection('tasks')

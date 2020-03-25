@@ -8,10 +8,18 @@ import 'package:shared_to_do/widgets/error_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 class TaskDetailScreen extends StatefulWidget {
+  final bool isEditing;
+  final String taskId;
+  final String taskTitle;
   final Function showLoadingIndicator;
   final Function hideLoadingIndicator;
 
-  TaskDetailScreen({this.showLoadingIndicator, this.hideLoadingIndicator});
+  TaskDetailScreen(
+      {this.isEditing = false,
+      this.taskId,
+      this.taskTitle,
+      this.showLoadingIndicator,
+      this.hideLoadingIndicator});
 
   @override
   _TaskDetailScreenState createState() => _TaskDetailScreenState();
@@ -26,14 +34,77 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
   Firestore _firestore = Firestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final textEditingController = TextEditingController();
+
   void getCurrentUserEmail() async {
     currentUser = await _auth.currentUser();
+  }
+
+  void addTask() async {
+    print('Add a task');
+    Navigator.pop(context);
+    widget.showLoadingIndicator();
+
+    try {
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+      Task newTask = Task(
+          id: Uuid().v4(),
+          title: title,
+          isDone: false,
+          createdBy: currentUser.email,
+          timestamp: timestamp);
+
+      await _firestore.collection('tasks').document(newTask.id).setData({
+        'id': newTask.id,
+        'title': newTask.title,
+        'isDone': newTask.isDone,
+        'createdBy': newTask.createdBy,
+        'timestamp': newTask.timestamp
+      });
+
+      widget.hideLoadingIndicator();
+    } catch (error) {
+      widget.hideLoadingIndicator();
+      showDialog(
+        context: context,
+        builder: (_) => ErrorDialog(message: error.message),
+      );
+    }
+  }
+
+  void editTask() async {
+    print('Edit a task');
+    Navigator.pop(context);
+    widget.showLoadingIndicator();
+
+    try {
+      int timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      await _firestore.collection('tasks').document(widget.taskId).updateData({
+        'title': title,
+        'timestamp': timestamp,
+      });
+
+      widget.hideLoadingIndicator();
+    } catch (error) {
+      widget.hideLoadingIndicator();
+      showDialog(
+        context: context,
+        builder: (_) => ErrorDialog(message: error.message),
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
     getCurrentUserEmail();
+
+    if (widget.isEditing) {
+      setState(() {
+        textEditingController.text = widget.taskTitle;
+      });
+    }
   }
 
   @override
@@ -63,8 +134,12 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                   .copyWith(primaryColor: kBeniukonBronzeColor),
               child: TextField(
                 autofocus: true,
+                controller: textEditingController,
                 decoration: InputDecoration(
-                  hintText: 'My brand new task',
+                  hintText: widget.isEditing
+                      ? 'New title for the task'
+                      : 'My '
+                          'brand new task',
                   labelText: 'Task title',
                 ),
                 style: TextStyle(fontSize: 20, color: kBlueHorizonColor),
@@ -83,44 +158,13 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
             AuthActionButton(
               width: getScreenWidth(context) * 0.5,
               height: 50,
-              title: 'Add',
+              title: widget.isEditing ? 'Edit' : 'Add',
               borderRadius: 10,
               elevation: 2,
               backgroundColor: kBeniukonBronzeColor,
               isEnabled: isButtonEnabled,
-              onPressedHandler: () async {
-                Navigator.pop(context);
-                widget.showLoadingIndicator();
-
-                try {
-                  int timestamp = DateTime.now().millisecondsSinceEpoch;
-                  Task newTask = Task(
-                      id: Uuid().v4(),
-                      title: title,
-                      isDone: false,
-                      createdBy: currentUser.email,
-                      timestamp: timestamp);
-
-                  await _firestore
-                      .collection('tasks')
-                      .document(newTask.id)
-                      .setData({
-                    'id': newTask.id,
-                    'title': newTask.title,
-                    'isDone': newTask.isDone,
-                    'createdBy': newTask.createdBy,
-                    'timestamp': newTask.timestamp
-                  });
-
-                  widget.hideLoadingIndicator();
-                } catch (error) {
-                  widget.hideLoadingIndicator();
-                  showDialog(
-                    context: context,
-                    builder: (_) => ErrorDialog(message: error.message),
-                  );
-                }
-              },
+              onPressedHandler: () async =>
+                  widget.isEditing ? editTask() : addTask(),
             ),
             Spacer(
               flex: 6,

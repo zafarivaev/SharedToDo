@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_to_do/screens/task_detail_screen.dart';
 import 'package:shared_to_do/utils/constants.dart';
-import 'package:shared_to_do/widgets/auth_action_button.dart';
-import 'package:shared_to_do/widgets/auth_card.dart';
 import 'package:shared_to_do/widgets/task_drawer.dart';
 import 'package:shared_to_do/widgets/tasks_stream.dart';
 
@@ -29,6 +27,29 @@ class _TasksScreenState extends State<TasksScreen> {
         _userEmail = _currentUser.email;
       });
     } catch (error) {}
+  }
+
+  void didChooseEdit(String taskId, String taskTitle) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => TaskDetailScreen(
+        isEditing: true,
+        taskId: taskId,
+        taskTitle: taskTitle,
+        showLoadingIndicator: () {
+          setState(() {
+            isLoading = true;
+          });
+        },
+        hideLoadingIndicator: () {
+          setState(() {
+            isLoading = false;
+          });
+        },
+      ),
+    );
   }
 
   @override
@@ -70,7 +91,9 @@ class _TasksScreenState extends State<TasksScreen> {
             );
           },
         ),
-        body: TasksList(),
+        body: TasksList(
+          didChooseEdit: didChooseEdit,
+        ),
       ),
     );
   }
