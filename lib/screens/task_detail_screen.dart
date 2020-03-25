@@ -6,6 +6,7 @@ import 'package:shared_to_do/model/task.dart';
 import 'package:shared_to_do/utils/constants.dart';
 import 'package:shared_to_do/widgets/auth_action_button.dart';
 import 'package:shared_to_do/widgets/error_dialog.dart';
+import 'package:uuid/uuid.dart';
 
 class TaskDetailScreen extends StatefulWidget {
   @override
@@ -60,6 +61,7 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                   data: Theme.of(context)
                       .copyWith(primaryColor: kBeniukonBronzeColor),
                   child: TextField(
+                    autofocus: true,
                     decoration: InputDecoration(
                       hintText: 'My brand new task',
                       labelText: 'Task title',
@@ -93,12 +95,17 @@ class _TaskDetailScreenState extends State<TaskDetailScreen> {
                     try {
                       int timestamp = DateTime.now().millisecondsSinceEpoch;
                       Task newTask = Task(
+                          id: Uuid().v4(),
                           title: title,
                           isDone: false,
                           createdBy: currentUser.email,
                           timestamp: timestamp);
 
-                      await _firestore.collection('tasks').add({
+                      await _firestore
+                          .collection('tasks')
+                          .document(newTask.id)
+                          .setData({
+                        'id': newTask.id,
                         'title': newTask.title,
                         'isDone': newTask.isDone,
                         'createdBy': newTask.createdBy,
