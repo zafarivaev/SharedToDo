@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_to_do/utils/constants.dart';
-
-import 'error_dialog.dart';
 
 class TaskTile extends StatefulWidget {
   final String taskId;
@@ -13,7 +9,17 @@ class TaskTile extends StatefulWidget {
   final int timestamp;
   final String author;
 
-  TaskTile({this.taskId, this.title, this.isDone, this.timestamp, this.author});
+  final Function(String taskId) onTaskDeleteHandler;
+  final Function(String taskId, bool isDone) onTaskStatusChange;
+
+  TaskTile(
+      {this.taskId,
+      this.title,
+      this.isDone,
+      this.timestamp,
+      this.author,
+      this.onTaskDeleteHandler,
+      this.onTaskStatusChange});
 
   @override
   _TaskTileState createState() => _TaskTileState();
@@ -27,40 +33,6 @@ class _TaskTileState extends State<TaskTile> {
   void initState() {
     super.initState();
     isDone = widget.isDone;
-  }
-
-  final Firestore _firestore = Firestore.instance;
-
-  Future<bool> deleteTask() async {
-    await _firestore
-        .collection('tasks')
-        .document(widget.taskId)
-        .delete()
-        .then((_) {
-      return true;
-    }).catchError((_) {
-      return false;
-    });
-
-    return false;
-  }
-
-  void markTaskAsDone() {
-    isDone = !isDone;
-    setState(() {
-      _firestore
-          .collection('tasks')
-          .document(widget.taskId)
-          .updateData({'isDone': isDone})
-          .then((_) {})
-          .catchError((error) {
-            showDialog(
-                context: context,
-                builder: (_) => ErrorDialog(
-                      message: error.toString(),
-                    ));
-          });
-    });
   }
 
   @override
@@ -83,7 +55,12 @@ class _TaskTileState extends State<TaskTile> {
         ),
         trailing: Checkbox(
           value: isDone,
-          onChanged: (newValue) => markTaskAsDone(),
+          onChanged: (_) {
+            setState(() {
+              isDone = !isDone;
+            });
+            widget.onTaskStatusChange(widget.taskId, isDone);
+          },
         ),
       ),
       actions: <Widget>[
@@ -99,14 +76,14 @@ class _TaskTileState extends State<TaskTile> {
           caption: 'Delete',
           color: kDesireColor,
           icon: Icons.delete,
-          onTap: () => deleteTask(),
+          onTap: () => widget.onTaskDeleteHandler(widget.taskId),
         )
       ],
       dismissal: SlidableDismissal(
         child: SlidableDrawerDismissal(),
         onDismissed: (actionType) {
           if (actionType == SlideActionType.secondary) {
-            deleteTask();
+            widget.onTaskDeleteHandler(widget.taskId);
           } else {
             print('Should edit');
           }

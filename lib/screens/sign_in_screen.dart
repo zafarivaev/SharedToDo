@@ -34,8 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: isLoading,
-        child: Padding(
-          padding: EdgeInsets.only(top: getScreenHeight(context) * 0.15),
+        child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
