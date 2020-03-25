@@ -4,7 +4,7 @@ import Felgo 3.0
 Item {
     property alias dispatcher: logicConnection.target
 
-    readonly property bool isBusy: api.busy
+    //readonly property bool isBusy:
     readonly property bool userLoggedIn: _.userLoggedIn
 
     signal fetchTodosFailed(var error)

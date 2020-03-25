@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/email_black.png</file>
+        <file>assets/vpn_key_black.png</file>
+    </qresource>
+</RCC>

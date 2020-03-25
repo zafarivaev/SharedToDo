@@ -1,10 +1,12 @@
 import Felgo 3.0
 import QtQuick 2.0
+import QtQuick.Controls 2.12
 import "model"
 import "logic"
 import "pages"
 
 App {
+    id: app
     licenseKey: "95884288E5342B0324322800B1BCB523A6E5EAA6052CA07EFE7CD733241A1BD
                  617AAD150D2B77D866D23605F507B0F828BE357A265F0154EAC566294BA39C7
                  F615D685B6165649C8893E9C7216DC95CB843DC29C15F01D9F89650B662FD0B
@@ -21,6 +23,18 @@ App {
         logic.fetchTodos()
     }
 
+    onInitTheme: {
+        Theme.colors.textColor = "#606060"
+
+        Theme.appButton.radius = Theme.appButton.minimumHeight / 2
+        Theme.appButton.minimumWidth = dp(app.width * 0.8)
+        Theme.appButton.minimumHeight = dp(45)
+        Theme.appButton.verticalMargin = dp(15)
+        Theme.appButton.fontCapitalization = Font.MixedCase
+        Theme.appButton.textSize = sp(17)
+        Theme.appButton.fontBold = false
+    }
+
     Logic {
         id: logic
     }
@@ -30,49 +44,20 @@ App {
         dispatcher: logic
 
         onFetchTodosFailed: nativeUtils.displayMessageBox("Unable to load todos", error, 1)
-        onFetchTodoDetailsFailed: nativeUtils.displayMessageBox("Unable to load todo "+id, error, 1)
-        onStoreTodoFailed: nativeUtils.displayMessageBox("Failed to store "+viewHelper.formatTitle(todo))
+        onStoreTodoFailed: nativeUtils.displayMessageBox("Failed to store " + viewHelper.formatTitle(todo))
     }
 
-    Navigation {
-        id: navigation
-        enabled: dataModel.userLoggedIn
-
-        NavigationItem {
-            title: qsTr("Todo List")
-            icon: IconType.list
-
-            NavigationStack {
-                splitView: tablet
-                initialPage: TodoListPage { }
-            }
+    NavigationStack {
+        WelcomePage {
         }
 
-        NavigationItem {
-            title: qsTr("Profile")
-            icon: IconType.circle
+//        Page {
+//            title: qsTr("Todo List")
 
-            NavigationStack {
-                initialPage: ProfilePage {
-                    onLogoutClicked: {
-                        logic.logout()
-                        navigation.currentIndex = 0
-                        navigation.currentNavigationItem.navigationStack.popAllExceptFirst()
-                    }
-                }
-            }
-        }
-    }
-
-    LoginPage {
-        visible: opacity > 0
-        enabled: visible
-        opacity: dataModel.userLoggedIn ? 0 : 1
-
-        Behavior on opacity {
-            NumberAnimation {
-                duration: 250
-            }
-        }
+//            NavigationStack {
+//                splitView: tablet
+//                initialPage: TodoListPage { }
+//            }
+//        }
     }
 }
