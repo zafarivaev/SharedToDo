@@ -61,4 +61,7 @@ macx {
 }
 
 DISTFILES += \
-    qml/pages/WelcomePage.qml
+    qml/pages/RegisterPage.qml \
+    qml/pages/WelcomePage.qml \
+    qml/style/Style.qml \
+    qml/style/qmldir

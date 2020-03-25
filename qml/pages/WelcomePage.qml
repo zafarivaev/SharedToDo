@@ -1,11 +1,13 @@
 import QtQuick 2.0
 import Felgo 3.0
 
+import "../style"
+
 Page {
     id: root
     title: "Shared To-Do"
 
-    Component.onCompleted: Theme.navigationBar.backgroundColor = "#2d98da"
+    onAppeared: Theme.navigationBar.backgroundColor = Style.welcomePageColor
 
     Column {
         anchors.centerIn: parent
@@ -15,10 +17,7 @@ Page {
             flat: false
             backgroundColor: "#4b7bec"
 
-            onClicked: {
-                root.navigationStack.push(Qt.resolvedUrl("LoginPage.qml"))
-                Theme.navigationBar.backgroundColor = "#4b7bec"
-            }
+            onClicked: root.navigationStack.push(Qt.resolvedUrl("SignInPage.qml"))
         }
 
         AppButton {
@@ -26,10 +25,7 @@ Page {
             flat: false
             backgroundColor: "#fa8231"
 
-            onClicked: {
-                root.navigationStack.push(Qt.resolvedUrl("RegisterPage.qml"))
-                Theme.navigationBar.backgroundColor = "#fa8231"
-            }
+            onClicked: root.navigationStack.push(Qt.resolvedUrl("RegisterPage.qml"))
         }
     }
 }

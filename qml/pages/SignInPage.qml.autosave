@@ -3,13 +3,20 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 
+import "../style"
+
 Page {
-    id: loginPage
+    id: root
     title: qsTr("Sign In")
     backNavigationEnabled: true
 
+    onAppeared: {
+        Theme.appButton.backgroundColor = Style.signinPageColor
+        Theme.navigationBar.backgroundColor = Style.signinPageColor
+    }
+
     AppPaper {
-        id: loginForm
+        id: background
         anchors.centerIn: parent
         width: content.width + dp(48)
         height: content.height + dp(50)
@@ -21,9 +28,9 @@ Page {
 
     Item {
         id: content
-        anchors.centerIn: loginForm
+        anchors.centerIn: background
         height: grid.height + buttonSignIn.anchors.topMargin + buttonSignIn.height
-        width: Math.max(grid.width, buttonSignIn.width)
+        width: grid.width
 
         GridLayout {
             id: grid
@@ -37,22 +44,28 @@ Page {
                 Layout.bottomMargin: dp(50)
                 Layout.columnSpan: 2
                 Layout.alignment: Qt.AlignHCenter
+
                 text: qsTr("Input your credentials")
+                color: Style.signinPageColor
             }
 
-            Image {
-                id: imageEmail
-                anchors.verticalCenter: columnEmail.verticalCenter
-                source: Qt.resolvedUrl("../../assets/email_black.png")
-                visible: false
+            Item {
+                height: imageEmail.height
+                width: imageEmail.width
+
                 Layout.alignment: Qt.AlignHCenter
 
-            }
+                Image {
+                    id: imageEmail
+                    source: Qt.resolvedUrl("../../assets/email_black.png")
+                    visible: false
+                }
 
-            ColorOverlay {
-                anchors.fill: imageEmail
-                source: imageEmail
-                color: Theme.textColor
+                ColorOverlay {
+                    anchors.fill: imageEmail
+                    source: imageEmail
+                    color: Theme.textColor
+                }
             }
 
             Column {
@@ -77,19 +90,25 @@ Page {
                 }
             }
 
-            Image {
-                id: imagePassword
-                anchors.verticalCenter: columnPassword.verticalCenter
-                source: Qt.resolvedUrl("../../assets/vpn_key_black.png")
-                visible: false
+            Item {
+                width: imagePassword.width
+                height: imagePassword.height
+
                 Layout.alignment: Qt.AlignHCenter
+
+                Image {
+                    id: imagePassword
+                    source: Qt.resolvedUrl("../../assets/vpn_key_black.png")
+                    visible: false
+                }
+
+                ColorOverlay {
+                    anchors.fill: imagePassword
+                    source: imagePassword
+                    color: Theme.textColor
+                }
             }
 
-            ColorOverlay {
-                anchors.fill: imagePassword
-                source: imagePassword
-                color: Theme.textColor
-            }
 
             Column {
                 id: columnPassword
@@ -122,14 +141,12 @@ Page {
                 topMargin: dp(20)
                 horizontalCenter: parent.horizontalCenter
             }
-            minimumWidth: loginForm.width * 0.8
+            minimumWidth: background.width * 0.8
             text: qsTr("Sign in")
             flat: false
 
             onClicked: {
-                loginPage.forceActiveFocus() // move focus away from text fields
-
-                // call login action
+                root.forceActiveFocus()
                 logic.login(txtUsername.text, txtPassword.text)
             }
         }
