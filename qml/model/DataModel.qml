@@ -2,13 +2,15 @@ import QtQuick 2.0
 import Felgo 3.0
 
 Item {
-    property alias dispatcher: logicConnection.target
-
-    //readonly property bool isBusy:
-    readonly property bool userLoggedIn: _.userLoggedIn
+    signal signedIn()
 
     signal fetchTodosFailed(var error)
     signal storeTodoFailed(var todo, var error)
+
+    property alias dispatcher: logicConnection.target
+
+    //readonly property bool isBusy:
+    readonly property bool isSignedIn: firebaseAuth.authenticated
 
     Connections {
         id: logicConnection
@@ -36,26 +38,15 @@ Item {
         onUserRegistered: {
             console.debug("User login " + success + " - " + message)
 
-            if (success) {
-                loginDialog.title = "Success!"
-            }
-            else {
-                loginDialog.title = "An issue occured!"
-            }
-
-            _.userLoggedIn = true
+            signedIn()
+            app.settings.setValue("token", userToken)
         }
 
         onLoggedIn: {
             console.debug("User login " + success + " - " + message)
 
-            if(success) {
-                loginDialog.title = "Success!"
-            } else {
-                loginDialog.title = "An issue occured!"
-            }
-
-            _.userLoggedIn = true
+            signedIn()
+            app.settings.setValue("token", userToken)
         }
     }
 
@@ -81,9 +72,7 @@ Item {
         }
     }
 
-    Item {
-        id: _
-        property bool userLoggedIn: false
-
+    function signInWithToken(token) {
+        firebaseAuth.loginUserWithToken(token)
     }
 }

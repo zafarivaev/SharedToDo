@@ -62,6 +62,7 @@ macx {
 
 DISTFILES += \
     android/google-services.json \
+    qml/components/DrawerDelegate.qml \
     qml/pages/RegisterPage.qml \
     qml/pages/WelcomePage.qml \
     qml/style/Style.qml \
