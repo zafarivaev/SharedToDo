@@ -6,7 +6,7 @@ Item {
     property alias icon: icon.icon
 
     id: root
-    height: dp(60)
+    height: dp(69)
 
     Icon {
         id: icon
@@ -30,7 +30,7 @@ Item {
 
     Rectangle {
         anchors.bottom: root.bottom
-        height: dp(1)
+        height: dp(0.5)
         color: Theme.dividerColor
         width: root.width
     }

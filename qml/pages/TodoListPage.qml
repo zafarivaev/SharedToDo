@@ -6,10 +6,15 @@ import "../style"
 import "../components"
 
 Page {
+    property alias model: listView.model
+
     id: root
     title: qsTr("Todo List")
 
-    onAppeared: Theme.navigationBar.backgroundColor = Style.todoListPageColor
+    onAppeared: {
+        Theme.colors.tintColor = Style.todoListPageColor
+        Theme.navigationBar.backgroundColor = Style.todoListPageColor
+    }
 
     leftBarItem: IconButtonBarItem {
         icon: IconType.bars
@@ -21,6 +26,30 @@ Page {
         enabled: false/*dataModel.isBusy*/
         visible: enabled
         showItem: showItemAlways
+    }
+
+    AppListView {
+        id: listView
+        anchors.fill: parent
+
+        delegate: SimpleRow {
+            text: title
+            detailText: "Created by " + createdBy
+
+            Item {
+                anchors {
+                    top: parent.top
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                width: height
+
+                AppCheckBox {
+                    anchors.centerIn: parent
+                    checked: isDone
+                }
+            }
+        }
     }
 
     AppDrawer {
@@ -46,21 +75,20 @@ Page {
             right: parent.right
         }
         enabled: drawer.isOpen
-        z: 1
 
         onClicked: drawer.close()
     }
 
-    JsonListModel {
-        id: listModel
-        //source:
-        //keyField: "id"
-        //fields: ["id", "title", "completed"]
-    }
+    //    Column {
+    //        anchors.centerIn: parent
+    //        AppButton {
+    //            text: "Store"
+    //            onClicked: logic.storeTodo("test todo")
+    //        }
 
-    AppListView {
-        id: listView
-        anchors.fill: parent
-        model: listModel
-    }
+    //        AppButton {
+    //            text: "Fetch"
+    //            onClicked: logic.fetchTodos()
+    //        }
+    //    }
 }

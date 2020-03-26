@@ -28,6 +28,10 @@ App {
 
     onInitTheme: {
         Theme.colors.textColor = "#606060"
+
+        Theme.listItem.textColor = "#303030"
+        Theme.listItem.detailTextColor = "#808080"
+        Theme.listItem.fontSizeText = 18
     }
 
     Logic {
@@ -77,6 +81,7 @@ App {
     Component {
         id: todoListComponent
         TodoListPage {
+            model: dataModel.todoModel
         }
     }
 

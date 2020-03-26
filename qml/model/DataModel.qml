@@ -3,11 +3,13 @@ import Felgo 3.0
 
 Item {
     signal signedIn()
+    signal fetched(var todos)
 
     signal fetchTodosFailed(var error)
     signal storeTodoFailed(var todo, var error)
 
     property alias dispatcher: logicConnection.target
+    property alias todoModel: jsonModel
 
     //readonly property bool isBusy:
     readonly property bool isSignedIn: firebaseAuth.authenticated
@@ -16,11 +18,11 @@ Item {
         id: logicConnection
 
         onFetchTodos: {
-            // load from api
+            db.getValue("tasks")
         }
 
         onStoreTodo: {
-            // store with api
+            db.setValue("tasks", todo)
         }
 
         onRegister: {
@@ -52,14 +54,30 @@ Item {
 
     FirebaseDatabase {
         id: db
+        realtimeValueKeys: ["tasks"]
+
+        Component.onCompleted: {
+            setValue("tasks", "testing task")
+        }
+
+        onRealtimeValueChanged: {
+            if (success) {
+                console.debug("Realtime value " + value + " for key " + key)
+            }
+            else {
+                console.debug("Realtime error with message: "  + value)
+            }
+        }
 
         onReadCompleted: {
             if (success) {
-                console.debug("Read value " +  value + " for key " + key)
+                console.debug("Read value " + value + " for key " + key)
             }
             else {
                 console.debug("Error with message: "  + value)
             }
+
+            fetched(value)
         }
 
         onWriteCompleted: {
@@ -72,7 +90,35 @@ Item {
         }
     }
 
+    JsonListModel {
+        id: jsonModel
+        source: _.todos
+        keyField: "id"
+        fields: ["createdBy", "id", "isDone", "timestamp", "title"]
+    }
+
     function signInWithToken(token) {
         firebaseAuth.loginUserWithToken(token)
+    }
+
+    Item {
+        property var todos: [
+            {
+                createdBy: "tokhirovdoniyor@gmail.com",
+                id: "11213",
+                isDone: false,
+                timestamp: 10109239208309,
+                title: "This is my todo"
+            },
+            {
+                createdBy: "z.ivaev@mail.ru",
+                id: "12346",
+                isDone: true,
+                timestamp: 10109239208309,
+                title: "This is zafar's todo"
+            }
+        ]
+
+        id: _
     }
 }
