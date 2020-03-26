@@ -7,32 +7,26 @@ import "pages"
 
 App {
     id: app
-    licenseKey: "95884288E5342B0324322800B1BCB523A6E5EAA6052CA07EFE7CD733241A1BD
-                 617AAD150D2B77D866D23605F507B0F828BE357A265F0154EAC566294BA39C7
-                 F615D685B6165649C8893E9C7216DC95CB843DC29C15F01D9F89650B662FD0B
-                 CFE76AB9DC2E2DC2A8F2C507E8CBD04000AF9B981517D4EED461EBC85C42F17
-                 53801D7A69C85DC55157C40AC5DFB2280EBF8A792710C0CD01FF2A6181FF085
-                 D7743C777E86DC511204E1C00C5D3405AEEC0DBB5FEE433644C4AC7A59B0582
-                 39508EE53D2859C9836A40951F3BA8AA99F0E9AFF0F5E056228CB5C682A3B3C
-                 FE0237623179C53393C2C064E9C0B781DE96E07411CD1E28E6D3C95046D1151
-                 10F7FAF96862908AA51216DCC206D1A3A320762A4CCEECEF587EF9C963B32B6
-                 09895D78B332153EA2CF43A6AF48B20331C9413D432DC7C7D6650E156C3A9C3
-                 3F20F6B48923D1887BEE5B08A4911B5561F1BD535E"
+    licenseKey: "6D4B3C96BAFE202393EC9D6E55F7881D4DAD07A617114C61E6AF2E1C6D84E6D421FB11AE4242B37BEBCF88EB1188B8E5E39DDE8641515A0EBD9FB55E63F1DF8A8AAC0C4939817D54228D96E21F22276B2E88E250E03E8A2A72164F60C0091E68C727B2649F4A9E1ED5925FAD28123E03C0A6614D7DF75F95D9C783ECF0CDA732D9489907E809CCDA9ACE6093AD426E87F76076F2E6DB134A08A350E701EC45BEB259B50688134E56D6C12E91AD44BA4A652E4BDD4160E8FBAFC8867AE36D08666AFEF073195B9C4F230B4C34C3D87C0FCCFE89D74F94BCC2F91DF1E9B61EE6F57E09971F45682A7739D3972AC33361D71D3EBBF1B289A11D1A4A16C63F6AB1DFEE87F31B5593557317C3E7C84507833D778D25CAE50515885120D328B2A7F443E450989F62DB1E5920EFAE23E2B7B79E77F91FDF1DCCDFA664238797F623C7A1C04A5F0A4355ACB27068F35B767D4F02"
 
     Component.onCompleted: {
         logic.fetchTodos()
+
+        var dpi = app.height / app.heightInInches
+        var scaleFactor = dpi / 160
+
+        Theme.appButton.radius = Theme.appButton.minimumHeight / 2
+        Theme.appButton.minimumWidth = app.width * 0.8 / scaleFactor
+
+        Theme.appButton.minimumHeight = 50
+        Theme.appButton.verticalMargin = 15
+        Theme.appButton.fontCapitalization = Font.MixedCase
+        Theme.appButton.textSize = 18
+        Theme.appButton.fontBold = false
     }
 
     onInitTheme: {
         Theme.colors.textColor = "#606060"
-
-        Theme.appButton.radius = Theme.appButton.minimumHeight / 2
-        Theme.appButton.minimumWidth = dp(app.width * 0.8)
-        Theme.appButton.minimumHeight = dp(45)
-        Theme.appButton.verticalMargin = dp(15)
-        Theme.appButton.fontCapitalization = Font.MixedCase
-        Theme.appButton.textSize = sp(17)
-        Theme.appButton.fontBold = false
     }
 
     Logic {
@@ -49,6 +43,8 @@ App {
 
     NavigationStack {
         WelcomePage {
+            onSigninClicked: navigationStack.push(signinComponent)
+            onRegisterClicked: navigationStack.push(registerComponent);
         }
 
 //        Page {
@@ -59,5 +55,17 @@ App {
 //                initialPage: TodoListPage { }
 //            }
 //        }
+    }
+
+    Component {
+        id: signinComponent
+        SignInPage {
+        }
+    }
+
+    Component {
+        id: registerComponent
+        RegisterPage {
+        }
     }
 }

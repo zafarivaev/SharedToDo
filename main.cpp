@@ -9,6 +9,7 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
     QApplication app(argc, argv);
     FelgoApplication felgo;
 

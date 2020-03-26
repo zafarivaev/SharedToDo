@@ -4,6 +4,9 @@ import Felgo 3.0
 import "../style"
 
 Page {
+    signal signinClicked()
+    signal registerClicked()
+
     id: root
     title: "Shared To-Do"
 
@@ -17,7 +20,7 @@ Page {
             flat: false
             backgroundColor: "#4b7bec"
 
-            onClicked: root.navigationStack.push(Qt.resolvedUrl("SignInPage.qml"))
+            onClicked: signinClicked()
         }
 
         AppButton {
@@ -25,7 +28,7 @@ Page {
             flat: false
             backgroundColor: "#fa8231"
 
-            onClicked: root.navigationStack.push(Qt.resolvedUrl("RegisterPage.qml"))
+            onClicked: registerClicked()
         }
     }
 }

@@ -4,6 +4,7 @@ Item {
     signal fetchTodos()
     signal storeTodo(var todo)
 
-    signal login(string username, string password)
-    signal logout()
+    signal register(string username, string password)
+    signal signin(string username, string password)
+    signal signout()
 }

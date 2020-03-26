@@ -21,13 +21,13 @@ Item {
             // store with api
         }
 
-        onLogin: {
-            // login
+        onRegister: {
+            console.log("Registering user...")
+            firebaseAuth.registerUser(username, password)
         }
 
-        onLogout: {
-            // logout
-        }
+        onSignin: firebaseAuth.loginUser(username, password)
+        onSignout: firebaseAuth.logoutUser()
     }
 
     FirebaseAuth {

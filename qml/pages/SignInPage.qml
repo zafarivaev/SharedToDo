@@ -6,7 +6,9 @@ import QtGraphicalEffects 1.0
 import "../style"
 
 Page {
-    id: signinPage
+    readonly property int iconSize: dp(20)
+
+    id: root
     title: qsTr("Sign In")
     backNavigationEnabled: true
 
@@ -59,6 +61,8 @@ Page {
                     id: imageEmail
                     source: Qt.resolvedUrl("../../assets/email_black.png")
                     visible: false
+                    height: iconSize
+                    width: iconSize
                 }
 
                 ColorOverlay {
@@ -100,6 +104,8 @@ Page {
                     id: imagePassword
                     source: Qt.resolvedUrl("../../assets/vpn_key_black.png")
                     visible: false
+                    height: iconSize
+                    width: iconSize
                 }
 
                 ColorOverlay {
@@ -146,8 +152,8 @@ Page {
             flat: false
 
             onClicked: {
-                signinPage.forceActiveFocus()
-                logic.login(txtUsername.text, txtPassword.text)
+                root.forceActiveFocus()
+                logic.signin(txtUsername.text, txtPassword.text)
             }
         }
     }
