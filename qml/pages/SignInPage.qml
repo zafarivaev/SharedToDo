@@ -12,10 +12,7 @@ Page {
     title: qsTr("Sign In")
     backNavigationEnabled: true
 
-    onAppeared: {
-        Theme.appButton.backgroundColor = Style.signinPageColor
-        Theme.navigationBar.backgroundColor = Style.signinPageColor
-    }
+    onAppeared: Theme.colors.tintColor = Style.signinPageColor
 
     AppPaper {
         id: background

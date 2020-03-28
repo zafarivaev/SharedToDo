@@ -42,8 +42,8 @@ App {
         dispatcher: logic
 
         onSignedIn: navStack.clearAndPush(todoListComponent)
+        onSignedOut: navStack.clearAndPush(welcomeComponent)
 
-        onFetchTodosFailed: nativeUtils.displayMessageBox("Unable to load todos", error, 1)
         onStoreTodoFailed: nativeUtils.displayMessageBox("Failed to store " + viewHelper.formatTitle(todo))
     }
 
@@ -63,7 +63,7 @@ App {
         Behavior on opacity {
             NumberAnimation {
                 property: "opacity"
-                duration: 50
+                duration: 200
                 easing.type: Easing.InQuad
             }
         }

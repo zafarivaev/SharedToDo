@@ -3,6 +3,7 @@ import Felgo 3.0
 
 Item {
     signal signedIn()
+    signal signedOut()
 
     signal storeTodoFailed(var todo, var error)
 
@@ -24,17 +25,48 @@ Item {
                 id: time,
                 isDone: false,
                 timestamp: time,
-                title: todo
+                title: text
             }
 
             db.setValue(dbKeyTodos + "/" + new Date().getTime(), jsonTodo)
         }
 
-        onRegister: {
-            console.log("Registering user...")
-            firebaseAuth.registerUser(username, password)
-        }
+        onEditTodo:
+            db.setValue(dbKeyTodos + "/" + _.todos[index].id + "/title", text,
+                        function (success, message) {
+                            if (success)
+                                console.debug("Edit index " + index + " successful")
+                            else
+                                console.debug("Couldn't edit because: " + message)
+                        })
 
+        onDeleteTodo:
+            db.setValue(dbKeyTodos + "/" + _.todos[index].id, null,
+                        function (success, message) {
+                            if (success)
+                                console.debug("Delete index " + index + " successful")
+                            else
+                                console.debug("Couldn't delete because: " + message)
+                        })
+
+        onMarkCompleted:
+            db.setValue(dbKeyTodos + "/" + _.todos[index].id + "/isDone", true,
+                        function (success, message) {
+                            if (success)
+                                console.debug("Mark complete index " + index + " successful")
+                            else
+                                console.debug("Couldn't mark complete because: " + message)
+                        })
+        onMarkNotCompleted:
+            db.setValue(dbKeyTodos + "/" + _.todos[index].id + "/isDone", false,
+                        function (success, message) {
+                            if (success)
+                                console.debug("Mark incomplete index " + index + " successful")
+                            else
+                                console.debug("Couldn't mark incomplete because: " + message)
+                        })
+
+        onRegister: firebaseAuth.registerUser(username, password)
         onSignin: firebaseAuth.loginUser(username, password)
         onSignout: firebaseAuth.logoutUser()
     }
@@ -55,18 +87,19 @@ Item {
         id: firebaseAuth
         config: fbConfig
 
+        onAuthenticatedChanged: {
+            if (authenticated)
+                signedIn()
+            else
+                signedOut()
+        }
+
         onUserRegistered: {
             console.debug("User login " + success + " - " + message)
-
-            if (success)
-                signedIn()
         }
 
         onLoggedIn: {
             console.debug("User login " + success + " - " + message)
-
-            if (success)
-                signedIn()
         }
     }
 
@@ -87,17 +120,19 @@ Item {
             }
             else {
                 console.debug("Realtime error with message: "  + value)
+
+                if (value === undefined && _.todos.length === 1) {
+                    _.todos = []
+                }
             }
 
         }
 
         onWriteCompleted: {
-            if (success) {
+            if (success)
                 console.debug("Successfully wrote to DB")
-            }
-            else {
+            else
                 console.debug("Write failed with error: " + message)
-            }
         }
     }
 
@@ -110,10 +145,6 @@ Item {
 
     Item {
         property var todos: []
-
-        onTodosChanged: {
-            console.log("todos: " + JSON.stringify(todos))
-        }
 
         id: _
     }

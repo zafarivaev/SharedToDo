@@ -2,6 +2,8 @@ import QtQuick 2.0
 import Felgo 3.0
 
 Item {
+    signal clicked()
+
     property alias text: appText.text
     property alias icon: icon.icon
 
@@ -26,6 +28,13 @@ Item {
             verticalCenter: root.verticalCenter
         }
         text: "Button"
+    }
+
+    RippleMouseArea {
+        anchors.fill: parent
+        circularBackground: false
+
+        onClicked: root.clicked()
     }
 
     Rectangle {

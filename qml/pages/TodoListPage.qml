@@ -32,21 +32,61 @@ Page {
         id: listView
         anchors.fill: parent
 
-        delegate: SimpleRow {
-            text: title
-            detailText: "Created by " + createdBy
+        delegate: SwipeOptionsContainer {
+            id: optionsContainer
 
-            Item {
-                anchors {
-                    top: parent.top
-                    right: parent.right
-                    bottom: parent.bottom
+            leftOption: SwipeOptionButton {
+                height: simpleRow.height
+                color: Style.editColor
+                icon: IconType.pencil
+
+                onClicked: {
+                    InputDialog.inputTextSingleLine(app, "Edit todo title:",
+                                                    simpleRow.text,
+                                                    function (ok, text) {
+                                                        if (ok)
+                                                            logic.editTodo(index, text)
+                                                    })
+                    optionsContainer.hideOptions()
                 }
-                width: height
+            }
 
-                AppCheckBox {
-                    anchors.centerIn: parent
-                    checked: isDone
+            rightOption: SwipeOptionButton {
+                height: simpleRow.height
+                color: Style.deleteColor
+                icon: IconType.trash
+
+                onClicked: {
+                    console.log("index: " + index)
+                    logic.deleteTodo(index)
+                }
+            }
+
+            SimpleRow {
+                id: simpleRow
+                text: title
+                detailText: "Created by " + createdBy
+
+                Item {
+                    anchors {
+                        top: parent.top
+                        right: parent.right
+                        bottom: parent.bottom
+                    }
+                    width: height
+
+                    AppCheckBox {
+                        id: checkBox
+                        anchors.centerIn: parent
+                        checked: isDone
+
+                        onCheckedChanged:  {
+                            if (checked)
+                                logic.markCompleted(index)
+                            else
+                                logic.markNotCompleted(index)
+                        }
+                    }
                 }
             }
         }
@@ -70,7 +110,12 @@ Page {
             color: Theme.secondaryBackgroundColor
             size: sp(23)
 
-            onClicked: logic.storeTodo("test todo")
+            onClicked:
+                InputDialog.inputTextSingleLine(app, "Enter todo title:", "",
+                                                function (ok, text) {
+                                                    if (ok)
+                                                        logic.storeTodo(text)
+                                                })
         }
     }
 
@@ -86,6 +131,8 @@ Page {
             text: qsTr("Sign Out")
             icon: IconType.signout
             width: parent.width
+
+            onClicked: logic.signout()
         }
     }
 

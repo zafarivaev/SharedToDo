@@ -10,7 +10,7 @@ Page {
     id: root
     title: "Shared To-Do"
 
-    onAppeared: Theme.navigationBar.backgroundColor = Style.welcomePageColor
+    onAppeared: Theme.colors.tintColor = Style.welcomePageColor
 
     Column {
         anchors.centerIn: parent
