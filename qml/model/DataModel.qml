@@ -3,9 +3,7 @@ import Felgo 3.0
 
 Item {
     signal signedIn()
-    signal fetched(var todos)
 
-    signal fetchTodosFailed(var error)
     signal storeTodoFailed(var todo, var error)
 
     property alias dispatcher: logicConnection.target
@@ -14,15 +12,22 @@ Item {
     //readonly property bool isBusy:
     readonly property bool isSignedIn: firebaseAuth.authenticated
 
+    readonly property string dbKeyTodos: "tasks"
+
     Connections {
         id: logicConnection
 
-        onFetchTodos: {
-            db.getValue("tasks")
-        }
-
         onStoreTodo: {
-            db.setValue("tasks", todo)
+            var time = new Date().getTime()
+            var jsonTodo = {
+                createdBy: firebaseAuth.email,
+                id: time,
+                isDone: false,
+                timestamp: time,
+                title: todo
+            }
+
+            db.setValue(dbKeyTodos + "/" + new Date().getTime(), jsonTodo)
         }
 
         onRegister: {
@@ -34,50 +39,56 @@ Item {
         onSignout: firebaseAuth.logoutUser()
     }
 
+    FirebaseConfig {
+        id: fbConfig
+        projectId: "shared-to-do"
+        databaseUrl: "https://shared-to-do.firebaseio.com"
+        apiKey: Qt.platform.os === "android"
+                ? "AIzaSyCTg40eQc-13KuCEZI90zTXzNuAnBNc9is"
+                : ""
+        applicationId: Qt.platform.os === "android"
+                       ? "1:654007037478:android:61ced7e4ad0cd194cac0e7"
+                       : 0
+    }
+
     FirebaseAuth {
         id: firebaseAuth
+        config: fbConfig
 
         onUserRegistered: {
             console.debug("User login " + success + " - " + message)
 
-            signedIn()
-            app.settings.setValue("token", userToken)
+            if (success)
+                signedIn()
         }
 
         onLoggedIn: {
             console.debug("User login " + success + " - " + message)
 
-            signedIn()
-            app.settings.setValue("token", userToken)
+            if (success)
+                signedIn()
         }
     }
 
     FirebaseDatabase {
         id: db
+        config: fbConfig
         realtimeValueKeys: ["tasks"]
-
-        Component.onCompleted: {
-            setValue("tasks", "testing task")
-        }
 
         onRealtimeValueChanged: {
             if (success) {
                 console.debug("Realtime value " + value + " for key " + key)
+
+                let todos = []
+                for (let id in value) {
+                    todos.push(value[id])
+                }
+                _.todos = todos
             }
             else {
                 console.debug("Realtime error with message: "  + value)
             }
-        }
 
-        onReadCompleted: {
-            if (success) {
-                console.debug("Read value " + value + " for key " + key)
-            }
-            else {
-                console.debug("Error with message: "  + value)
-            }
-
-            fetched(value)
         }
 
         onWriteCompleted: {
@@ -97,27 +108,12 @@ Item {
         fields: ["createdBy", "id", "isDone", "timestamp", "title"]
     }
 
-    function signInWithToken(token) {
-        firebaseAuth.loginUserWithToken(token)
-    }
-
     Item {
-        property var todos: [
-            {
-                createdBy: "tokhirovdoniyor@gmail.com",
-                id: "11213",
-                isDone: false,
-                timestamp: 10109239208309,
-                title: "This is my todo"
-            },
-            {
-                createdBy: "z.ivaev@mail.ru",
-                id: "12346",
-                isDone: true,
-                timestamp: 10109239208309,
-                title: "This is zafar's todo"
-            }
-        ]
+        property var todos: []
+
+        onTodosChanged: {
+            console.log("todos: " + JSON.stringify(todos))
+        }
 
         id: _
     }

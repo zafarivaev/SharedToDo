@@ -11,7 +11,6 @@ App {
 
     Component.onCompleted: {
         fadeOutTransition.opacity = 0
-        logic.fetchTodos()
 
         var dpi = app.height / app.heightInInches
         var scaleFactor = dpi / 160

@@ -52,6 +52,28 @@ Page {
         }
     }
 
+    Rectangle {
+        width: dp(55)
+        height: width
+        radius: width / 2
+        anchors {
+            right: parent.right
+            rightMargin: dp(20)
+            bottom: parent.bottom
+            bottomMargin: dp(20)
+        }
+        color: Theme.tintColor
+
+        IconButton {
+            anchors.centerIn: parent
+            icon: IconType.plus
+            color: Theme.secondaryBackgroundColor
+            size: sp(23)
+
+            onClicked: logic.storeTodo("test todo")
+        }
+    }
+
     AppDrawer {
         id: drawer
 
@@ -78,17 +100,4 @@ Page {
 
         onClicked: drawer.close()
     }
-
-    //    Column {
-    //        anchors.centerIn: parent
-    //        AppButton {
-    //            text: "Store"
-    //            onClicked: logic.storeTodo("test todo")
-    //        }
-
-    //        AppButton {
-    //            text: "Fetch"
-    //            onClicked: logic.fetchTodos()
-    //        }
-    //    }
 }

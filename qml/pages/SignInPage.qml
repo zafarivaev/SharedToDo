@@ -152,7 +152,6 @@ Page {
             flat: false
 
             onClicked: {
-                root.forceActiveFocus()
                 logic.signin(txtUsername.text, txtPassword.text)
             }
         }
