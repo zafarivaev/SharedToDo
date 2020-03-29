@@ -12,10 +12,7 @@ Page {
     title: qsTr("Register")
     backNavigationEnabled: true
 
-    onAppeared: {
-        Theme.appButton.backgroundColor = Style.registerPageColor
-        Theme.navigationBar.backgroundColor = Style.registerPageColor
-    }
+    onAppeared: Theme.colors.tintColor = Style.registerPageColor
 
     AppPaper {
         id: background

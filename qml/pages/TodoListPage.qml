@@ -11,10 +11,9 @@ Page {
     id: root
     title: qsTr("Todo List")
 
-    onAppeared: {
-        Theme.colors.tintColor = Style.todoListPageColor
-        Theme.navigationBar.backgroundColor = Style.todoListPageColor
-    }
+    onAppeared: Theme.colors.tintColor = Style.todoListPageColor
+
+    onPushed: pushAnim.start()
 
     leftBarItem: IconButtonBarItem {
         icon: IconType.bars
@@ -146,5 +145,26 @@ Page {
         enabled: drawer.isOpen
 
         onClicked: drawer.close()
+    }
+
+    ParallelAnimation {
+        id: pushAnim
+
+        NumberAnimation {
+            target: root
+            property: "opacity"
+            duration: 500
+            from: 0
+            to: 1
+        }
+
+        NumberAnimation {
+            target: root
+            property: "y"
+            duration: 500
+            from: root.height
+            to: navStack.navigationBar.height
+            easing.type: Easing.OutQuad
+        }
     }
 }

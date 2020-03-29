@@ -12,6 +12,8 @@ Page {
 
     onAppeared: Theme.colors.tintColor = Style.welcomePageColor
 
+    onPushed: pushAnim.start()
+
     Column {
         anchors.centerIn: parent
 
@@ -29,6 +31,27 @@ Page {
             backgroundColor: "#fa8231"
 
             onClicked: registerClicked()
+        }
+    }
+
+    ParallelAnimation {
+        id: pushAnim
+
+        NumberAnimation {
+            target: root
+            property: "opacity"
+            duration: 500
+            from: 0
+            to: 1
+        }
+
+        NumberAnimation {
+            target: root
+            property: "y"
+            duration: 500
+            from: root.height
+            to: navStack.navigationBar.height
+            easing.type: Easing.OutQuad
         }
     }
 }

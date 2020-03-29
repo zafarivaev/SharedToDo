@@ -49,8 +49,8 @@ App {
 
     NavigationStack {
         id: navStack
-
         initialPage: welcomeComponent
+        transitionDelegate: transitionDelegateiOS
     }
 
     Rectangle {
