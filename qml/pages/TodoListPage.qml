@@ -1,6 +1,6 @@
 import QtQuick.Controls 2.12
 import Felgo 3.0
-import QtQuick 2.0
+import QtQuick 2.12
 
 import "../style"
 import "../components"
@@ -31,63 +31,19 @@ Page {
         id: listView
         anchors.fill: parent
 
-        delegate: SwipeOptionsContainer {
-            id: optionsContainer
+        delegate: TodoDelegate {
+            titleText: title
+            detailText: createdBy
+            isChecked: isDone
 
-            leftOption: SwipeOptionButton {
-                height: simpleRow.height
-                color: Style.editColor
-                icon: IconType.pencil
-
-                onClicked: {
-                    InputDialog.inputTextSingleLine(app, "Edit todo title:",
-                                                    simpleRow.text,
-                                                    function (ok, text) {
-                                                        if (ok)
-                                                            logic.editTodo(index, text)
-                                                    })
-                    optionsContainer.hideOptions()
-                }
+            onCheckChanged:  {
+                if (checked)
+                    logic.markCompleted(index)
+                else
+                    logic.markNotCompleted(index)
             }
 
-            rightOption: SwipeOptionButton {
-                height: simpleRow.height
-                color: Style.deleteColor
-                icon: IconType.trash
-
-                onClicked: {
-                    console.log("index: " + index)
-                    logic.deleteTodo(index)
-                }
-            }
-
-            SimpleRow {
-                id: simpleRow
-                text: title
-                detailText: "Created by " + createdBy
-
-                Item {
-                    anchors {
-                        top: parent.top
-                        right: parent.right
-                        bottom: parent.bottom
-                    }
-                    width: height
-
-                    AppCheckBox {
-                        id: checkBox
-                        anchors.centerIn: parent
-                        checked: isDone
-
-                        onCheckedChanged:  {
-                            if (checked)
-                                logic.markCompleted(index)
-                            else
-                                logic.markNotCompleted(index)
-                        }
-                    }
-                }
-            }
+            onDeleted: logic.deleteTodo(index)
         }
     }
 
